@@ -1,34 +1,35 @@
-console.log('first line');
+//console.log('first line');
 
 function getComputerChoice(){
     let myArray = ['rock', 'paper', 'scissors'];
     return myArray[Math.floor(Math.random()*myArray.length)];
 }
-console.log(getComputerChoice());
+//console.log(getComputerChoice());
 
 
 function playRound(playerSelection, computerSelection){
     let playerMove = playerSelection.toLowerCase().trim();
+    const matchStr = `Player : ${playerMove}; CPU : ${computerSelection}`
     console.log('computer: '+computerSelection+'\n jugador: '+playerMove)
     if(computerSelection == playerMove){
-        return 'Empate'
+        return [0 , matchStr + ' Empate']
     } else if (playerMove == 'rock'){
         if(computerSelection == 'paper'){
-            return 'Derrota jugador';
+            return [-1 , matchStr + ' Derrota Jugador'];
         }else {
-            return 'Victoria jugador';
+            return [1 , matchStr + ' Victoria Jugador'];
         }
     }else if (playerMove == 'paper'){
         if(computerSelection == 'rock'){
-            return 'Victoria jugador';
+            return [1 , matchStr + ' Victoria Jugador'];
         }else{
-            return 'Victoria jugador';
+            return [-1 , matchStr + ' Derrota Jugador'];
         }
     }else if(playerMove == 'scissors'){
         if(computerSelection == 'rock'){
-            return 'Derrota jugador';
+            return [-1 , matchStr + ' Derrota Jugador'];
         }else{
-            return 'Victoria jugador';
+            return [1 , matchStr + ' Victoria Jugador'];
         }
     } else {
         return console.error();
@@ -36,32 +37,38 @@ function playRound(playerSelection, computerSelection){
 }
 
 
-//const computerSelection = getComputerChoice();
-//const userSelection = 'scissors';
-//console.log(playRound(userSelection,computerSelection));
 
-function game(){
-    let score = 0
-    for(let i = 0; i < 5; i++){
-        let userMove = prompt();
-        let computerSelection = getComputerChoice();
-        let result = playRound(userMove, computerSelection);
-        if(result == 'Victoria jugador'){
-            score += 1;
-        }else if (result == 'Derrota jugador'){
-            score -= 1;
-        }
-        
-        console.log('El resultado de la partida es : '+result+'\n El Score acumulado es: '+score);
-    }
+var scorePlayer = 0;
+var scorecpu = 0 ;
+const buttons = document.querySelectorAll('button');
+console.log(buttons);
+buttons.forEach(btn => btn.addEventListener('click', function(){
+    console.log(this.innerText.toLowerCase().trim());
+    const playerMove =this.innerText.toLowerCase().trim();
+    const computerMove = getComputerChoice();
+    //console.log(playRound(playerMove, computerMove));
+    const result = playRound(playerMove, computerMove);
+    const newDiv = document.createElement('div');
+    newDiv.classList.add('resultItem');
+    newDiv.innerText = result[1];
+    if(result[0] == 1 ){
+        scorePlayer++;
+    }else if(result[0] == -1){
+        scorecpu++;
+    };
+    document.querySelector('div.results').appendChild(newDiv);   
+    document.querySelector('.scores').innerText = `Score Player: ${scorePlayer} ; Score CPU: ${scorecpu}`
+    if( scorePlayer == 5||scorecpu ==5 ){
 
-    console.log('\n');
-    if(score > 0){
-        console.log('Jugador ha ganado');
-    }else if(score < 0){
-        console.log('Maquina ha ganado');
-    }else if(score == 0){
-        console.log('Empate para todos');
+        let scoredivs = document.querySelectorAll('div.resultItem');
+        console.log(scoredivs);
+        scoredivs.forEach(item => item.remove());
+
+        let finalResult =scorePlayer == 5 ? 'Ganador Jugador' : 'Ganador : CPU';
+        alert(finalResult); 
+        scorePlayer = 0, scorecpu = 0;
+        document.querySelector('.scores').innerText = `Score Player: ${scorePlayer} ; Score CPU: ${scorecpu}`
     }
-}
-game();
+    
+}));
+
